@@ -1,5 +1,5 @@
 "use strict";
-
+// console.log("Dataloader");
 class DataLoader extends EventTarget {
   #_src;
   #_options;
@@ -34,6 +34,7 @@ class DataLoader extends EventTarget {
             detail: data,
           })
         );
+        data({ detail: data });
       })
       .catch((error) => {
         this.dispatchEvent(

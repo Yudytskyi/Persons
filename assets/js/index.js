@@ -1,6 +1,8 @@
 "use strict";
 
 import DataLoader from "./DataLoader.js";
+import addDOMElement from "./addDOMElement.js";
+import Person from "./Person.js";
 
 const state = {
   error: null,
@@ -29,19 +31,13 @@ dataLoader.addEventListener("load", ({ detail: users }) => {
     .getElementById("usersList")
     ?.append(...users.map((user) => createUserListItem(user)));
 });
+
 dataLoader.addEventListener("error", ({ detail: error }) => {
   state.error = error;
   state.isFathing = false;
 });
 
-// state.isFathing = true;
-// dataLoader.src = "../../persons.json";
 state.setSrc("../../persons.json");
-
-function onDataLoadHandler(e) {
-  const data = e.detail;
-}
-// onDataLoadHandler();
 
 const colorCodesMap = {};
 

@@ -1,3 +1,13 @@
+"use strict";
+
+/**
+ *
+ * @param {Object} params
+ * @param {DOMElement} obj.parents
+ * @param {string} obj.name
+ * @param {Array} obj.attributes
+ * @param {string} obj.innerText
+ */
 function addDOMElement({
   parents = document.body,
   name = "div",
@@ -12,3 +22,5 @@ function addDOMElement({
   chaildDOMElem.innerText = innerText;
   parents?.append(chaildDOMElem);
 }
+
+export default addDOMElement;
