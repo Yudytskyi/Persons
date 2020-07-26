@@ -1,0 +1,58 @@
+/* @import "../fonts/icons"; */
+@import url("./reset.css");
+
+#usersList {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+}
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userCard {
+  border: 2px solid red;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  overflow: hidden;
+  margin: 10px;
+}
+
+.userPictureContainer,
+.userPicture {
+  height: 300px;
+  width: 100%;
+}
+
+.userPictureContainer {
+  position: relative;
+  background-color: rgb(88, 146, 253);
+  color: white;
+  font-family: sans-serif;
+  font-size: 100px;
+  font-weight: bold;
+  text-shadow: 0px 0px 10px black;
+}
+
+.userPicture {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: inherit;
+  object-fit: cover;
+  object-position: top;
+}
+
+.userFullName {
+  text-align: center;
+  margin: 30px 0;
+}
