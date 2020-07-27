@@ -1,11 +1,21 @@
-/* @import "../fonts/icons"; */
 @import url("./reset.css");
+
+#content-container {
+  margin: 0;
+  padding: 16px;
+}
+
+.content {
+  border: 1px solid red;
+  margin: 0;
+}
 
 #usersList {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
+
 .flexCenter {
   display: flex;
   justify-content: center;
@@ -13,16 +23,24 @@
 }
 
 .userCard {
-  border: 2px solid red;
-
+  position: relative;
+  border: 1px solid red;
   display: flex;
   flex-direction: column;
-
   width: 320px;
   min-width: 320px;
   max-width: 320px;
   overflow: hidden;
-  margin: 10px;
+  margin: 10px 0;
+  border: 2px solid green;
+}
+.userCard:hover {
+  border: 2px solid red;
+}
+
+.usersSelectedList {
+  border: 2px solid red;
+  padding: 16px;
 }
 
 .userPictureContainer,
@@ -41,6 +59,29 @@
   text-shadow: 0px 0px 10px black;
 }
 
+.btnsBlock {
+  position: absolute;
+  text-outline: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+}
+.button {
+  padding: 3px;
+}
+.select {
+  border-bottom-right-radius: 50%;
+}
+.remove {
+  border-bottom-left-radius: 50%;
+}
+
+.button-img {
+  width: 40px;
+  height: 40px;
+}
+
 .userPicture {
   position: absolute;
   left: 0;
@@ -51,8 +92,13 @@
   object-fit: cover;
   object-position: top;
 }
+.male {
+  border-radius: 30%;
+}
 
 .userFullName {
   text-align: center;
-  margin: 30px 0;
+  margin: 16px 0;
+  font-size: 1.3rem;
+  font-weight: 700;
 }

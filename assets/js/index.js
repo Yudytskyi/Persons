@@ -1,7 +1,6 @@
 "use strict";
 
 import DataLoader from "./DataLoader.js";
-import addDOMElement from "./addDOMElement.js";
 import Person from "./Person.js";
 
 const state = {
@@ -12,24 +11,40 @@ const state = {
     state.isFathing = true;
     dataLoader.src = srs;
   },
+  persons: {},
+  selected: [],
 };
 
-addDOMElement({
-  name: "ul",
-  attributes: [
-    ["id", "usersList"],
-    ["class", "container"],
-  ],
-});
+const section = document.createElement("section");
+section.setAttribute("id", "content-container");
+document.body.append(section);
 
-const ul = document.getElementById("usersList");
+const usersSelectedList = document.createElement("ul");
+usersSelectedList.setAttribute("id", "usersSelectedList");
+usersSelectedList.setAttribute("class", "usersSelectedList");
+document.getElementById("content-container").append(usersSelectedList);
+
+const usersList = document.createElement("ul");
+usersList.setAttribute("id", "usersList");
+usersList.setAttribute("class", "content");
+document.getElementById("content-container").append(usersList);
 
 const dataLoader = new DataLoader();
 
 dataLoader.addEventListener("load", ({ detail: users }) => {
-  document
-    .getElementById("usersList")
-    ?.append(...users.map((user) => createUserListItem(user)));
+  state.persons = users;
+  document.getElementById("usersList")?.append(
+    ...state.persons.forEach((user) => {
+      const person = new Person({
+        person: user,
+        control: {
+          select: onSelectedBtnClickHandler,
+          remove: onRemoveBtnClickHandler,
+        },
+      });
+      person.addPersonCard(usersList);
+    })
+  );
 });
 
 dataLoader.addEventListener("error", ({ detail: error }) => {
@@ -41,136 +56,24 @@ state.setSrc("../../persons.json");
 
 const colorCodesMap = {};
 
-/**
- *
- * @param {object} user
- * @param {number | string} user.id
- * @param {string} user.firstName
- * @param {string} user.lastName
- * @param {string} user.profilePicture
- * @returns {HTMLLIElement}
- */
-function createUserListItem(user) {
-  const userListItemElem = document.createElement("li"); // <LI>
-  userListItemElem.setAttribute("id", user.id);
-  userListItemElem.append(createUserCard(user)); //<LI><ARTICLE><IMG></ARTICLE></LI>
-  return userListItemElem;
+function onSelectedBtnClickHandler(e) {
+  addOnSelestList(e.target.dataset.selectId);
 }
-
-/**
- *
- * @param {object} user
- * @returns {HTMLArticleElement}
- */
-function createUserCard(user) {
-  const userCardElem = document.createElement("article"); // <ARTICLE>
-  userCardElem.classList.add("userCard");
-  userCardElem.append(
-    createUserImage(user),
-    createUserFullNameElem(user),
-    createDeleteUserBtn(user)
-  ); // <ARTICLE><IMG><DIV></ARTICLE>
-  return userCardElem;
-}
-
-/**
- *
- * @param {object} user
- * @returns {HTMLDivElement}
- */
-function createUserImage({ id, firstName, lastName, profilePicture }) {
-  const container = document.createElement("div");
-  container.setAttribute("id", `imageContainer${id}`);
-  container.classList.add("userPictureContainer", "flexCenter");
-  container.append(createUserInitialsElem({ firstName, lastName }));
-  container.style.setProperty(
-    "background-color",
-    stringToColorCode(`${id}${firstName}${lastName}`)
-  );
-  const image = document.createElement("img"); // <IMG>
-  image.setAttribute("data-container-id", `imageContainer${id}`);
-  image.addEventListener("load", onImageLoadHandler);
-
-  image.addEventListener("error", onImageErrorHandler);
-
-  image.setAttribute("src", profilePicture);
-  image.setAttribute("alt", `${firstName} ${lastName} picture`);
-  image.classList.add("userPicture");
-
-  return container;
-}
-/**
- *
- * @param {object} param0
- * @returns {HTMLDivElement}
- */
-function createUserFullNameElem({ firstName, lastName }) {
-  const fullNameElem = document.createElement("div"); // <DIV>
-  fullNameElem.classList.add("userFullName");
-  fullNameElem.append(document.createTextNode(`${firstName} ${lastName}`));
-  return fullNameElem;
-}
-/**
- *
- * @param {object} param0
- * @returns {HTMLSpanElement}
- */
-function createUserInitialsElem({ firstName, lastName }) {
-  const initialsElem = document.createElement("span");
-  initialsElem.setAttribute("title", `${firstName} ${lastName} initials`);
-  initialsElem.append(
-    document.createTextNode(`${firstName[0] || ""}${lastName[0] || ""}`)
-  );
-  return initialsElem;
-}
-/**
- * @param {object} user
- * @returns {HTMLButtomElement}
- */
-function createDeleteUserBtn({ id }) {
-  const btn = document.createElement("button");
-  const btnImg = document.createElement("img");
-  btnImg.setAttribute("src", "./icons/del-user.svg");
-  btn.setAttribute("data-card-id", id);
-  btn.append(btnImg);
-  btn.addEventListener("click", onRemoveBtnClickHandler);
-
-  return btn;
-}
-
-/**
- * Events Handlers
- */
-
 function onRemoveBtnClickHandler(e) {
-  document.getElementById(e.target.dataset.cardId)?.remove();
+  document.getElementById(e.target.dataset.removeId)?.remove();
+  state.persons = state.persons.filter(
+    (person) => person.id != [e.target.dataset.removeId]
+  );
 }
-function onImageLoadHandler({ target }) {
-  document.getElementById(target.dataset.containerId)?.append(target);
-}
-function onImageErrorHandler({ target }) {
-  target.remove();
-}
-
-/**
- * Utils
- */
-
-function stringToColorCode(str) {
-  let userValue = 0;
-
-  for (const char of str) {
-    userValue += char.charCodeAt(0);
+function addOnSelestList(id) {
+  if (true) {
+    const person = state.persons.filter((person) => person.id == id)[0];
+    const usersSelectedListItem = document.createElement("li");
+    usersSelectedListItem.classList.add("select-user");
+    usersSelectedListItem.setAttribute("data-select-user-id", id);
+    usersSelectedListItem.append(
+      document.createTextNode(`${person.firstName} ${person.lastName}`)
+    );
+    usersSelectedList.append(usersSelectedListItem);
   }
-
-  while (userValue > 1) {
-    userValue /= 10;
-  }
-
-  return localStorage.getItem(str)
-    ? localStorage.getItem(str)
-    : localStorage.setItem(
-        str,
-        "#" + ("000000" + ((userValue * 0xffffff) << 0).toString(16)).slice(-6)
-      );
 }
